@@ -1,0 +1,8 @@
+/*
+ * One chip of a theme's preview strip. The colour arrives as a custom property
+ * set inline per chip, because it belongs to the theme being previewed, not to
+ * the theme that is applied.
+ */
+.ks-swatch-chip {
+  background: var(--ks-swatch);
+}
