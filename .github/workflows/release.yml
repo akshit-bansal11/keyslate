@@ -36,6 +36,21 @@ jobs:
       # Runs `npm run build` itself (beforeBuildCommand), then compiles and bundles.
       - run: npx tauri build
 
+      # The only place the real app is ever started before a person does. It
+      # proves the exe launches, stays up, starts its webview and that the Rust
+      # setup created the default vault. It does not look at the window.
+      - name: Smoke test the built app
+        shell: pwsh
+        run: |
+          $app = Start-Process target/release/keyslate.exe -PassThru
+          Start-Sleep -Seconds 20
+          if ($app.HasExited) { throw "Keyslate exited with code $($app.ExitCode)" }
+          $welcome = Join-Path ([Environment]::GetFolderPath('MyDocuments')) 'Keyslate/Welcome.md'
+          if (-not (Test-Path $welcome)) { throw "The default vault was not created: $welcome is missing" }
+          if (-not (Get-Process msedgewebview2 -ErrorAction SilentlyContinue)) { throw "No WebView2 process is running" }
+          Stop-Process -Id $app.Id -Force
+          Write-Host "Launched, created $welcome, webview running."
+
       - name: Collect assets
         shell: bash
         run: |
