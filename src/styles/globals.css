@@ -1,0 +1,240 @@
+@import "tailwindcss";
+
+/*
+ * Token file. One source of truth: colour VALUES live in the theme objects
+ * (src/lib/themes) and are written onto :root as --ks-* at runtime; this file
+ * maps those onto semantic Tailwind roles and holds every non-colour scale.
+ * Components use the semantic utilities only (bg-surface, text-muted, ...).
+ *
+ * Contrast is enforced by src/lib/themes/builtin-themes.test.ts, which sweeps
+ * every built-in theme: text and muted on bg/surface/raised at 4.5:1, accentFg
+ * on accent at 4.5:1, accent and border-on-surface focus/boundary at 3:1.
+ */
+
+@theme inline {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-bg: var(--ks-bg); /* editor and page background */
+  --color-surface: var(--ks-surface); /* sidebar, status bar */
+  --color-raised: var(--ks-raised); /* dialogs, menus, inputs */
+  --color-border: var(--ks-border);
+  --color-text: var(--ks-text);
+  --color-muted: var(--ks-muted); /* secondary text; still 4.5:1 */
+  --color-accent: var(--ks-accent); /* focus ring, selection marker, primary button */
+  --color-accent-fg: var(--ks-accent-fg); /* label on a filled accent control */
+  --color-danger: var(--ks-danger); /* always paired with a word or icon */
+  --color-hover: color-mix(in srgb, var(--ks-text) 9%, transparent);
+  --color-active: color-mix(in srgb, var(--ks-text) 15%, transparent);
+  --color-selected: color-mix(in srgb, var(--ks-accent) 20%, transparent);
+  --color-backdrop: color-mix(in srgb, var(--ks-bg) 70%, transparent);
+
+  --font-sans: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Cascadia Code", "Cascadia Mono", consolas, monospace;
+  --font-serif: georgia, "Times New Roman", serif;
+  --font-editor: var(--ks-editor-font);
+}
+
+/* static: emit every scale as a real custom property, so plain CSS files can use them. */
+@theme static {
+  /* Type scale: named steps with line heights. No font-size literals elsewhere. */
+  --text-*: initial;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1rem;
+  --text-sm: 0.8125rem;
+  --text-sm--line-height: 1.25rem;
+  --text-base: 0.875rem;
+  --text-base--line-height: 1.375rem;
+  --text-lg: 1rem;
+  --text-lg--line-height: 1.5rem;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.75rem;
+
+  /* Radius: control < card < surface. */
+  --radius-*: initial;
+  --radius-control: 0.25rem;
+  --radius-card: 0.5rem;
+  --radius-surface: 0.75rem;
+
+  /* Elevation: a border does the separating; the shadow only lifts. */
+  --shadow-*: initial;
+  --shadow-raised: 0 1px 2px rgb(0 0 0 / 20%);
+  --shadow-overlay: 0 8px 24px rgb(0 0 0 / 28%);
+  --shadow-modal: 0 16px 48px rgb(0 0 0 / 36%);
+
+  /* Motion: one duration set, one easing. Opacity fades only. */
+  --ease-*: initial;
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --animate-*: initial;
+  --animate-enter: ks-enter var(--ks-duration-base) var(--ease-standard);
+}
+
+:root {
+  /* System colours until a theme is applied, so the first paint follows the OS. */
+  color-scheme: dark light;
+  --ks-bg: Canvas;
+  --ks-surface: Canvas;
+  --ks-raised: Canvas;
+  --ks-border: GrayText;
+  --ks-text: CanvasText;
+  --ks-muted: CanvasText;
+  --ks-accent: Highlight;
+  --ks-accent-fg: HighlightText;
+  --ks-danger: CanvasText;
+
+  --ks-editor-font: var(--font-mono);
+  --ks-editor-size: 15px;
+  --ks-editor-line-height: 1.6;
+  --ks-editor-width: 80ch;
+
+  --ks-duration-fast: 80ms;
+  --ks-duration-base: 140ms;
+}
+
+/* Density scales Tailwind's whole spacing scale from one number. */
+:root[data-density="compact"] {
+  --spacing: 0.2rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --ks-duration-fast: 0ms;
+    --ks-duration-base: 0ms;
+  }
+}
+
+@keyframes ks-enter {
+  from {
+    opacity: 0;
+  }
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    overflow: hidden;
+    background: var(--ks-bg);
+    color: var(--ks-text);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    user-select: none;
+  }
+
+  input,
+  textarea,
+  [contenteditable="true"],
+  .selectable {
+    user-select: text;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ks-accent);
+    outline-offset: 1px;
+  }
+
+  ::selection {
+    background: color-mix(in srgb, var(--ks-accent) 35%, transparent);
+  }
+
+  dialog::backdrop {
+    background: color-mix(in srgb, var(--ks-bg) 70%, transparent);
+  }
+
+  * {
+    scrollbar-color: color-mix(in srgb, var(--ks-text) 25%, transparent) transparent;
+    scrollbar-width: thin;
+  }
+}
+
+@layer components {
+  /* The three control shapes every surface shares. */
+  .ks-button {
+    display: inline-flex;
+    align-items: center;
+    gap: calc(var(--spacing) * 1.5);
+    min-height: calc(var(--spacing) * 7);
+    padding-inline: calc(var(--spacing) * 2.5);
+    border: 1px solid var(--ks-border);
+    border-radius: var(--radius-control);
+    background: transparent;
+    color: var(--ks-text);
+    transition: background-color var(--ks-duration-fast) var(--ease-standard);
+  }
+
+  .ks-button:hover {
+    background: var(--color-hover);
+  }
+
+  .ks-button:active {
+    background: var(--color-active);
+  }
+
+  .ks-button:disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  .ks-button-primary {
+    border-color: var(--ks-accent);
+    background: var(--ks-accent);
+    color: var(--ks-accent-fg);
+  }
+
+  .ks-button-primary:hover {
+    background: color-mix(in srgb, var(--ks-accent) 88%, var(--ks-text));
+  }
+
+  .ks-button-primary:active {
+    background: color-mix(in srgb, var(--ks-accent) 78%, var(--ks-text));
+  }
+
+  .ks-input {
+    width: 100%;
+    min-height: calc(var(--spacing) * 7);
+    padding-inline: calc(var(--spacing) * 2);
+    border: 1px solid var(--ks-border);
+    border-radius: var(--radius-control);
+    background: var(--ks-raised);
+    color: var(--ks-text);
+  }
+
+  .ks-input::placeholder {
+    color: var(--ks-muted);
+  }
+
+  /* Sizes for the one modal primitive (components/ui/modal.tsx). */
+  .ks-modal {
+    width: min(40rem, calc(100vw - 2rem));
+    max-height: 85vh;
+    margin: auto;
+  }
+
+  .ks-modal-top {
+    margin-top: 12vh;
+  }
+
+  .ks-modal-narrow {
+    width: min(26rem, calc(100vw - 2rem));
+  }
+
+  .ks-modal-wide {
+    width: min(56rem, calc(100vw - 2rem));
+    height: 85vh;
+  }
+
+  .ks-kbd {
+    padding: 0 calc(var(--spacing) * 1.25);
+    border: 1px solid var(--ks-border);
+    border-radius: var(--radius-control);
+    color: var(--ks-muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    line-height: var(--text-xs--line-height);
+    white-space: nowrap;
+  }
+}

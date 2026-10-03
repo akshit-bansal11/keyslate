@@ -1,0 +1,60 @@
+{
+  "name": "keyslate",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A fully local, keyboard-first notes app for Windows. Plain .md and .txt files, no network.",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview --port 4173 --strictPort",
+    "tauri": "tauri",
+    "check": "biome check --write . && eslint . && stylelint \"src/**/*.css\" --fix && tsc --noEmit",
+    "check:ci": "biome ci . && eslint . && stylelint \"src/**/*.css\" && tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@codemirror/lang-markdown": "6.5.2",
+    "@lezer/highlight": "1.2.5",
+    "@tauri-apps/api": "2.12.1",
+    "cmdk": "1.1.1",
+    "codemirror": "6.0.2",
+    "dompurify": "3.4.16",
+    "lucide-react": "1.51.0",
+    "marked": "18.0.14",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "turndown": "7.2.4",
+    "zod": "4.6.5",
+    "zustand": "5.0.15"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
+    "@biomejs/biome": "2.5.15",
+    "@eslint/js": "10.0.1",
+    "@playwright/test": "1.63.0",
+    "@tailwindcss/vite": "4.3.3",
+    "@tauri-apps/cli": "2.12.1",
+    "@types/node": "24.19.1",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/turndown": "5.0.6",
+    "@vitejs/plugin-react": "6.1.1",
+    "eslint": "10.12.0",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "17.13.0",
+    "jsdom": "30.1.1",
+    "stylelint": "17.16.0",
+    "stylelint-config-standard": "40.0.0",
+    "tailwindcss": "4.3.3",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.71.0",
+    "vite": "8.3.2",
+    "vitest": "5.0.3"
+  }
+}
