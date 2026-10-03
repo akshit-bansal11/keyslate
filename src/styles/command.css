@@ -1,0 +1,89 @@
+/*
+ * Command UI: the three pickers (palette, quick-open, search) and the shortcut
+ * sheet. cmdk renders plain divs marked with [cmdk-*] attributes; those are
+ * the styling hooks, so the pickers cannot drift apart.
+ */
+
+/* The caret is always here while a picker is open, so the focus mark is an
+   underline in the accent colour instead of a ring around the whole row. */
+[cmdk-input] {
+  flex: 1;
+  min-width: 0;
+  height: calc(var(--spacing) * 10);
+  border-bottom: 2px solid transparent;
+  background: transparent;
+  color: var(--ks-text);
+  font-size: var(--text-base);
+  line-height: var(--text-base--line-height);
+}
+
+[cmdk-input]::placeholder {
+  color: var(--ks-muted);
+}
+
+[cmdk-input]:focus-visible {
+  border-bottom-color: var(--ks-accent);
+  outline: none;
+}
+
+[cmdk-list] {
+  max-height: min(24rem, 60vh);
+  padding: calc(var(--spacing) * 1.5);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-padding-block: calc(var(--spacing) * 1.5);
+}
+
+[cmdk-group-heading] {
+  padding: calc(var(--spacing) * 2) calc(var(--spacing) * 2) calc(var(--spacing) * 1);
+  color: var(--ks-muted);
+  font-size: var(--text-xs);
+  line-height: var(--text-xs--line-height);
+}
+
+[cmdk-item] {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--spacing) * 2);
+  min-height: max(1.5rem, calc(var(--spacing) * 7));
+  padding-inline: calc(var(--spacing) * 2);
+  border-inline-start: 2px solid transparent;
+  border-radius: var(--radius-control);
+  cursor: default;
+  transition: background-color var(--ks-duration-fast) var(--ease-standard);
+}
+
+/* Selection is the tint plus the accent bar, so it survives without colour vision. */
+[cmdk-item][data-selected="true"] {
+  border-inline-start-color: var(--ks-accent);
+  background: var(--color-selected);
+}
+
+[cmdk-empty] {
+  padding: calc(var(--spacing) * 6) calc(var(--spacing) * 3);
+  color: var(--ks-muted);
+  font-size: var(--text-sm);
+  line-height: var(--text-sm--line-height);
+  text-align: center;
+}
+
+/* Line numbers in search results share one right-aligned column. */
+.ks-picker-line {
+  min-width: calc(var(--spacing) * 8);
+  text-align: end;
+}
+
+.ks-shortcut-columns {
+  columns: 16rem;
+  column-gap: calc(var(--spacing) * 8);
+}
+
+.ks-shortcut-group {
+  margin-bottom: calc(var(--spacing) * 4);
+  break-inside: avoid;
+}
+
+.ks-shortcut-summary {
+  min-height: 1.5rem;
+  cursor: default;
+}
