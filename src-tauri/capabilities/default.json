@@ -1,0 +1,12 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "The main window may use Tauri's core IPC and events, and may destroy itself: the close handler awaits a pending save and then closes the window from JS. The dialog and global-shortcut plugins are driven from Rust commands only, so the webview is granted none of their permissions.",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+    "core:window:allow-destroy"
+  ]
+}
