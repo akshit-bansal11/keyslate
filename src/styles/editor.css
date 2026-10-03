@@ -1,0 +1,276 @@
+/*
+ * Editor pane: layout, syntax classes and preview typography. CodeMirror's own
+ * chrome (caret, selection, gutters, search panel) is themed in
+ * src/lib/editor/editor-theme.ts, from the same custom properties.
+ */
+
+/* Density can shrink the spacing unit below a 24px pointer target; this holds the floor. */
+.ks-hit {
+  min-width: 1.5rem;
+  min-height: 1.5rem;
+}
+
+/* ---- Layout ---- */
+
+.ks-editor-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  container-type: inline-size;
+}
+
+.ks-editor-split {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+}
+
+.ks-editor,
+.ks-preview {
+  flex: 1 1 0;
+  min-width: 0;
+  min-height: 0;
+}
+
+.ks-preview {
+  overflow: auto;
+  padding: calc(var(--spacing) * 4) calc(var(--spacing) * 5);
+}
+
+/* The ring sits inside the pane, where nothing can clip it. */
+.ks-preview:focus-visible {
+  outline-offset: -2px;
+}
+
+.ks-editor:not([hidden]) + .ks-preview {
+  border-inline-start: 1px solid var(--ks-border);
+}
+
+/* Side by side needs room for two readable columns; below that they stack. */
+@container (width <= 44rem) {
+  .ks-editor-split {
+    flex-direction: column;
+  }
+
+  .ks-editor:not([hidden]) + .ks-preview {
+    border-block-start: 1px solid var(--ks-border);
+    border-inline-start: 0;
+  }
+}
+
+/* ---- Syntax: one accent, with weight, slant and underline doing the rest ---- */
+
+.ks-editor .tok-heading,
+.ks-editor .tok-strong {
+  font-weight: 700;
+}
+
+.ks-editor .tok-heading1 {
+  font-size: 1.3em;
+}
+
+.ks-editor .tok-heading2 {
+  font-size: 1.15em;
+}
+
+.ks-editor .tok-emphasis {
+  font-style: italic;
+}
+
+.ks-editor .tok-strikethrough {
+  color: var(--ks-muted);
+  text-decoration: line-through;
+}
+
+.ks-editor .tok-link {
+  color: var(--ks-accent);
+  text-decoration: underline;
+}
+
+.ks-editor .tok-monospace {
+  border-radius: var(--radius-control);
+  background: color-mix(in srgb, var(--ks-text) 8%, transparent);
+}
+
+.ks-editor .tok-quote,
+.ks-editor .tok-comment {
+  color: var(--ks-muted);
+  font-style: italic;
+}
+
+/* Markup characters and addresses step back so the words stand out. */
+.ks-editor .tok-meta,
+.ks-editor .tok-url {
+  color: var(--ks-muted);
+}
+
+.ks-editor .tok-keyword,
+.ks-editor .tok-atom {
+  color: var(--ks-accent);
+}
+
+/* ---- Preview typography ---- */
+
+.ks-prose {
+  max-width: var(--ks-editor-width);
+  margin-inline: auto;
+  font-size: var(--ks-editor-size);
+  line-height: var(--ks-editor-line-height);
+  overflow-wrap: anywhere;
+}
+
+.ks-prose > * + * {
+  margin-block-start: 1em;
+}
+
+.ks-prose-empty,
+.ks-image-note {
+  color: var(--ks-muted);
+  font-style: italic;
+}
+
+.ks-image-note {
+  padding-inline: 0.4em;
+  border: 1px dashed var(--ks-border);
+  border-radius: var(--radius-control);
+}
+
+.ks-prose h1,
+.ks-prose h2,
+.ks-prose h3,
+.ks-prose h4,
+.ks-prose h5,
+.ks-prose h6 {
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.ks-prose > h1,
+.ks-prose > h2,
+.ks-prose > h3 {
+  margin-block-start: 1.6em;
+}
+
+.ks-prose > :first-child {
+  margin-block-start: 0;
+}
+
+.ks-prose h1 {
+  font-size: 1.7em;
+}
+
+.ks-prose h2 {
+  padding-block-end: 0.2em;
+  border-block-end: 1px solid var(--ks-border);
+  font-size: 1.4em;
+}
+
+.ks-prose h3 {
+  font-size: 1.2em;
+}
+
+.ks-prose h6 {
+  color: var(--ks-muted);
+}
+
+.ks-prose a {
+  color: var(--ks-accent);
+  text-decoration: underline;
+}
+
+.ks-prose strong {
+  font-weight: 700;
+}
+
+.ks-prose ul,
+.ks-prose ol {
+  padding-inline-start: 1.6em;
+}
+
+.ks-prose ul {
+  list-style: disc;
+}
+
+.ks-prose ol {
+  list-style: decimal;
+}
+
+.ks-prose li + li,
+.ks-prose li > ul,
+.ks-prose li > ol {
+  margin-block-start: 0.25em;
+}
+
+/* A task item's checkbox stands in for its bullet. */
+.ks-prose li:has(> input[type="checkbox"]) {
+  list-style: none;
+  margin-inline-start: -1.4em;
+}
+
+.ks-prose input[type="checkbox"] {
+  margin-inline-end: 0.4em;
+  accent-color: var(--ks-accent);
+}
+
+.ks-prose blockquote {
+  padding-inline-start: 1em;
+  border-inline-start: 3px solid var(--ks-border);
+  color: var(--ks-muted);
+}
+
+.ks-prose blockquote > * + * {
+  margin-block-start: 0.6em;
+}
+
+.ks-prose code {
+  padding: 0.1em 0.3em;
+  border-radius: var(--radius-control);
+  background: color-mix(in srgb, var(--ks-text) 8%, transparent);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+.ks-prose pre {
+  overflow-x: auto;
+  padding: 0.8em 1em;
+  border: 1px solid var(--ks-border);
+  border-radius: var(--radius-card);
+  background: var(--ks-surface);
+  line-height: 1.5;
+  overflow-wrap: normal;
+}
+
+.ks-prose pre code {
+  padding: 0;
+  background: none;
+}
+
+/* A wide table scrolls inside itself instead of widening the pane. */
+.ks-prose table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+  border-collapse: collapse;
+  overflow-wrap: normal;
+}
+
+.ks-prose th,
+.ks-prose td {
+  padding: 0.3em 0.7em;
+  border: 1px solid var(--ks-border);
+}
+
+.ks-prose th {
+  background: var(--ks-surface);
+  font-weight: 600;
+}
+
+.ks-prose hr {
+  border: 0;
+  border-block-start: 1px solid var(--ks-border);
+}
+
+.ks-prose img {
+  max-width: 100%;
+}
