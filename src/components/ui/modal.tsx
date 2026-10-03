@@ -34,7 +34,12 @@ export function Modal({
     openRef.current = open;
     // Light dismiss: a click on the backdrop closes it, natively.
     dialog.setAttribute("closedby", "any");
-    if (open && !dialog.open) dialog.showModal();
+    if (open && !dialog.open) {
+      dialog.showModal();
+      // showModal focuses the first focusable node, which can be a wrapper with
+      // tabindex="-1" (cmdk renders one). Typing must land in a real control.
+      dialog.querySelector<HTMLElement>("input, textarea, select, button")?.focus();
+    }
     if (!open && dialog.open) dialog.close();
   }, [open]);
 

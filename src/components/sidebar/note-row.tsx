@@ -53,7 +53,10 @@ export const NoteRow = memo(function NoteRow({
             {note.title}
           </span>
         </div>
-        <div className="flex items-center gap-1.5 text-muted text-xs">
+        {/* Muted text is only measured against plain backgrounds, not the selected tint. */}
+        <div
+          className={cn("flex items-center gap-1.5 text-xs", selected ? "text-text" : "text-muted")}
+        >
           <span className="shrink-0">{edited}</span>
           {note.format === "txt" ? (
             <span className="shrink-0 rounded-control border border-border px-1">txt</span>

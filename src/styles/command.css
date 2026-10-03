@@ -59,6 +59,12 @@
   background: var(--color-selected);
 }
 
+/* Muted text is measured against plain backgrounds only, so on the selected
+   tint every secondary label steps up to the main text colour. */
+[cmdk-item][data-selected="true"] :is(.text-muted, .ks-kbd) {
+  color: var(--ks-text);
+}
+
 [cmdk-empty] {
   padding: calc(var(--spacing) * 6) calc(var(--spacing) * 3);
   color: var(--ks-muted);

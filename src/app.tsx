@@ -12,6 +12,7 @@ import { Sidebar } from "@/components/sidebar/sidebar";
 import { useApplySettings } from "@/hooks/use-apply-settings";
 import { useGlobalKeys } from "@/hooks/use-global-keys";
 import { APP_COMMANDS } from "@/lib/commands/app-commands";
+import { executeCommand } from "@/lib/commands/execute";
 import { registerCommands } from "@/lib/commands/registry";
 import { useAppStore } from "@/lib/store/app-store";
 import { startApp } from "@/lib/store/note-actions";
@@ -20,6 +21,7 @@ import { TRANSFER_COMMANDS } from "@/lib/transfer/transfer-commands";
 
 export function App() {
   const sidebarVisible = useAppStore((state) => state.settings.sidebarVisible);
+  const ready = useAppStore((state) => state.ready);
 
   useGlobalKeys();
   useApplySettings();
@@ -27,6 +29,10 @@ export function App() {
   useEffect(() => {
     void startApp();
   }, []);
+  // The app opens ready to type.
+  useEffect(() => {
+    if (ready) executeCommand("editor.focus");
+  }, [ready]);
 
   return (
     <div className="flex h-full flex-col">
@@ -36,7 +42,9 @@ export function App() {
       >
         Skip to the editor
       </a>
-      <h1 className="sr-only">Keyslate</h1>
+      <header className="sr-only">
+        <h1>Keyslate</h1>
+      </header>
       <div className="flex min-h-0 flex-1">
         {sidebarVisible ? <Sidebar /> : null}
         <main id="main" className="flex min-w-0 flex-1 flex-col bg-bg">
