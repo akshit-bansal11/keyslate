@@ -26,10 +26,12 @@ export function Modal({
   children,
 }: ModalProps) {
   const ref = useRef<HTMLDialogElement>(null);
+  const openRef = useRef(open);
 
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
+    openRef.current = open;
     // Light dismiss: a click on the backdrop closes it, natively.
     dialog.setAttribute("closedby", "any");
     if (open && !dialog.open) dialog.showModal();
@@ -40,7 +42,12 @@ export function Modal({
     <dialog
       ref={ref}
       aria-label={label}
-      onClose={onClose}
+      // The close event is asynchronous. When the owner already set `open` to
+      // false (one overlay replacing another), reporting it again would close
+      // whatever was opened in the meantime.
+      onClose={() => {
+        if (openRef.current) onClose();
+      }}
       className={cn(
         "ks-modal overflow-hidden rounded-surface border border-border bg-raised p-0 text-text shadow-modal open:flex open:animate-enter open:flex-col",
         placement === "top" && "ks-modal-top",

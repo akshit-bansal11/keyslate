@@ -68,13 +68,20 @@ export function setFilterText(filterText: string) {
 
 /** Applies at once, validates, and writes settings.json shortly after. */
 export function updateSettings(patch: Partial<Settings>) {
-  const settings = parseSettings({ ...useAppStore.getState().settings, ...patch });
+  const previous = useAppStore.getState().settings;
+  const settings = parseSettings({ ...previous, ...patch });
   useAppStore.setState({ settings });
   clearTimeout(settingsTimer);
   settingsTimer = setTimeout(() => {
     getBackend().saveSettings(useAppStore.getState().settings).catch(reportError);
   }, SETTINGS_SAVE_MS);
   if ("globalShortcut" in patch) {
-    getBackend().setGlobalShortcut(settings.globalShortcut).catch(reportError);
+    getBackend()
+      .setGlobalShortcut(settings.globalShortcut)
+      .catch((error: unknown) => {
+        // The OS refused it (usually another app owns the combo): keep the old one.
+        reportError(error);
+        updateSettings({ globalShortcut: previous.globalShortcut });
+      });
   }
 }

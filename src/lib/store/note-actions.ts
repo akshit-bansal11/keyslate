@@ -104,8 +104,10 @@ async function change(id: string, work: () => Promise<NoteMeta>) {
     const wasActive = getState().activeId === id;
     if (wasActive) await flushSave();
     const meta = await work();
-    if (wasActive) setState({ activeId: meta.id });
-    await refreshNotes();
+    const backend = getBackend();
+    const [notes, trash] = await Promise.all([backend.listNotes(), backend.listTrash()]);
+    // One update, so the open note never points at an id the list lacks.
+    setState(wasActive ? { activeId: meta.id, notes, trash } : { notes, trash });
   } catch (error) {
     reportError(error);
   }

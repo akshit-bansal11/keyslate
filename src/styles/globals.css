@@ -8,7 +8,8 @@
  *
  * Contrast is enforced by src/lib/themes/builtin-themes.test.ts, which sweeps
  * every built-in theme: text and muted on bg/surface/raised at 4.5:1, accentFg
- * on accent at 4.5:1, accent and border-on-surface focus/boundary at 3:1.
+ * on accent at 4.5:1, the accent (focus ring) and control outlines at 3:1.
+ * Plain borders are separators and only need to be visible.
  */
 
 @theme inline {
@@ -26,6 +27,9 @@
   --color-hover: color-mix(in srgb, var(--ks-text) 9%, transparent);
   --color-active: color-mix(in srgb, var(--ks-text) 15%, transparent);
   --color-selected: color-mix(in srgb, var(--ks-accent) 20%, transparent);
+
+  /* Outline of a button or field: its only boundary, so it meets 3:1. */
+  --color-control: color-mix(in srgb, var(--ks-text) 60%, var(--ks-bg));
   --color-backdrop: color-mix(in srgb, var(--ks-bg) 70%, transparent);
 
   --font-sans: "Segoe UI Variable Text", "Segoe UI", system-ui, sans-serif;
@@ -159,7 +163,7 @@
     gap: calc(var(--spacing) * 1.5);
     min-height: calc(var(--spacing) * 7);
     padding-inline: calc(var(--spacing) * 2.5);
-    border: 1px solid var(--ks-border);
+    border: 1px solid var(--color-control);
     border-radius: var(--radius-control);
     background: transparent;
     color: var(--ks-text);
@@ -197,7 +201,7 @@
     width: 100%;
     min-height: calc(var(--spacing) * 7);
     padding-inline: calc(var(--spacing) * 2);
-    border: 1px solid var(--ks-border);
+    border: 1px solid var(--color-control);
     border-radius: var(--radius-control);
     background: var(--ks-raised);
     color: var(--ks-text);
